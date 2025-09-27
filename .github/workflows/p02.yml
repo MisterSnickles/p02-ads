@@ -24,7 +24,7 @@ jobs:
         # g++ -o p01 p01.cpp  # Update with your actual files
     
     - name: Run with simulated input
-      run: ./p01 < input.dat  # Run your code with simulated input
+      run: ./p02 < input.dat  # Run your code with simulated input
       working-directory: ./Code
     - name: Second test of simulated input
       run: ./p02 < input2.dat
