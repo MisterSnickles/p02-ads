@@ -1,0 +1,31 @@
+name: p02 Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest  # or 'windows-latest' or 'macos-latest'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # - name: Install dependencies
+      # run: sudo apt-get update && sudo apt-get install -y build-essential
+
+    - name: Build project
+      run: make
+        # g++ -o p01 p01.cpp  # Update with your actual files
+    
+    - name: Run with simulated input
+      run: ./p01 < input.dat  # Run your code with simulated input
+    - name: Second test of simulated input
+      run: ./p02 < input2.dat
+
+    # - name: Run tests
+      # run: ./run_tests.sh      # Replace with your test script or test binary
