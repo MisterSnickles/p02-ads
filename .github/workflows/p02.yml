@@ -24,9 +24,12 @@ jobs:
         # g++ -o p01 p01.cpp  # Update with your actual files
     
     - name: Run
-      run: ./p02  # Run your code with simulated input
+      run: ./p02 input.dat output.dat  # Run your code with simulated input
       working-directory: ./Code
 
+    - name: Run
+      run: ./p02 input2.dat output2.dat  # Run your code with simulated input
+      working-directory: ./Code
 
     # - name: Run tests
       # run: ./run_tests.sh      # Replace with your test script or test binary
