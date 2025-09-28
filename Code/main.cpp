@@ -10,8 +10,7 @@ using namespace std;
     The grid of letters will be returned
 */
 Grid<char>* read_input(string file, string& target) {
-
-    // TODO 1: read the input file
+// TODO 1: read the input file
     
 
 
@@ -46,8 +45,7 @@ bool search(Grid<char>* grid, int r, int c, const char* target) {
 int main(int argc, char* argv[]) {
     try {
         if (argc != 3) {
-            throw CommandLineException();
-        
+            throw CommandLineException();  
         }
         string target;
         Grid<char>* grid = read_input(argv[1], target);
