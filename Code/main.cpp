@@ -66,14 +66,21 @@ Grid<char>* read_input(string file, string& target) {
 }
 
 /*
-    The target word here is represented by a char pointer: next char to be matched.
+    The target word here is represented by a char pointer: next char to be (matched.
     If there is a complete match, return true, else return false.
 */
 bool search(Grid<char>* grid, int r, int c, const char* target) {
-    bool result = false;
+    bool result = true;
     
     // TODO 2: search the target in the grid
+    // cout << target << endl;
+    // cout << target[0] << endl;
+    // int x = target.length();
 
+
+    // for(int i=0; i<(target.length()); i++){
+    //     cout <<target[i]<<endl;
+    // }
 
 
 
@@ -112,23 +119,22 @@ int main(int argc, char* argv[]) {
         // }
         // cout << "-----------------" << endl;
 
-
-
-        // ofstream output;
-        // output.open(argv[2]);
-        // if (output.fail()) {
-        //     throw FileException(argv[2]);
-        // }
-
-        // for (int i = 0; i < grid->row(); i++) {
-        //     for (int j = 0; j < grid->col(); j++) {
-        //         if (search(grid, i , j, target.c_str())) {
-        //             output << "Solution found!" << endl;
-        //         }
-        //     }
-        // }
-
-        // output.close();
+        ofstream output;
+        output.open(argv[2]);
+        if (output.fail()) {
+            throw FileException(argv[2]);
+        }
+        search(grid, 0 , 1, target.c_str());
+        
+        for (int i = 0; i < grid->row(); i++) {
+            for (int j = 0; j < grid->col(); j++) {
+                if (search(grid, i , j, target.c_str())) {
+                   output << "Solution found!" << endl;
+                    // cout << "Solution found!: " << i << " " << j << endl;
+               }
+            }
+        }
+        output.close();
 
     } catch(...) {
         exit(EXIT_FAILURE);
