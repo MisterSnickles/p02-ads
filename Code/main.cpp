@@ -12,10 +12,57 @@ using namespace std;
 Grid<char>* read_input(string file, string& target) {
 // TODO 1: read the input file
     
+    //create stream, open file, and check if it fails.
+    ifstream input;
+    input.open(file);
+    if (input.fail()){
+        throw FileException(file);
+    }
 
+    //gets the target word from the first line in the input file
+    getline(input, target);
+    
+    //gets the row and column number from the second line in the input file
+    int row;
+    int col;
+    input >> row;
+    input >> col;
 
+    //Create a new grid object and initialize with the row and column you got from the file
+    Grid<char>* grid = new Grid<char>(row, col);
+  
+    // set each element in the array with the character in the file
+    for (int i=0; i<row; i++){
+        for (int j=0; j<col; j++){
+            char x;
+            if (!(input>>x)){
+                throw FileContentException();
+            }
+            grid->set(i,j,x);
+        }
+    }
 
-    return nullptr;
+    //close the file
+    input.close();
+
+    // // Uncomment the code below to print out the data from the file. 
+    // // It prints out the target word, row and columns, and matrix data
+    // cout << "-----After Read Input------" << endl;
+    // cout << "-----You are in the read_input function" << endl;
+    // cout << target << endl;
+    // cout << grid->row() << " " << grid->col() << endl;
+    // for (int i=0; i<(grid->row()); i++){
+    //     for (int j=0; j<(grid->col()); j++){
+    //         char getCharacter;
+    //         grid->get(i,j,getCharacter);
+    //         cout << getCharacter << " ";
+    //     }
+    //     cout << endl;
+    // }
+    // cout << "-----------------" << endl;
+
+    //return the grid you made. Our grid in main will be set to this grid.
+    return grid;
 }
 
 /*
@@ -38,10 +85,6 @@ bool search(Grid<char>* grid, int r, int c, const char* target) {
 // e.g., you can consider the following function:
 // void search2(Grid<char>* grid, int r, int c, const char* target, vector<string>& result, ostream& out);
 
-
-
-
-
 int main(int argc, char* argv[]) {
     try {
         if (argc != 3) {
@@ -53,21 +96,39 @@ int main(int argc, char* argv[]) {
             return EXIT_FAILURE;
         }
 
-        ofstream output;
-        output.open(argv[2]);
-        if (output.fail()) {
-            throw FileException(argv[2]);
-        }
+        // // Uncomment the code below to print out the data from the file. 
+        // // It prints out the target word, row and columns, and matrix data
+        // cout << "-----Grid Data------" << endl;
+        // cout << "-----You are in the main function" << endl;
+        // cout << target << endl;
+        // cout << grid->row() << " " << grid->col() << endl;
+        // for (int i=0; i<(grid->row()); i++){
+        //     for (int j=0; j<(grid->col()); j++){
+        //         char getCharacter;
+        //         grid->get(i,j,getCharacter);
+        //         cout << getCharacter << " ";
+        //     }
+        //     cout << endl;
+        // }
+        // cout << "-----------------" << endl;
 
-        for (int i = 0; i < grid->row(); i++) {
-            for (int j = 0; j < grid->col(); j++) {
-                if (search(grid, i , j, target.c_str())) {
-                    output << "Solution found!" << endl;
-                }
-            }
-        }
 
-        output.close();
+
+        // ofstream output;
+        // output.open(argv[2]);
+        // if (output.fail()) {
+        //     throw FileException(argv[2]);
+        // }
+
+        // for (int i = 0; i < grid->row(); i++) {
+        //     for (int j = 0; j < grid->col(); j++) {
+        //         if (search(grid, i , j, target.c_str())) {
+        //             output << "Solution found!" << endl;
+        //         }
+        //     }
+        // }
+
+        // output.close();
 
     } catch(...) {
         exit(EXIT_FAILURE);
