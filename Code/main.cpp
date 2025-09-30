@@ -70,39 +70,52 @@ Grid<char>* read_input(string file, string& target) {
     If there is a complete match, return true, else return false.
 */
 bool search(Grid<char>* grid, int r, int c, const char* target) {
-    bool result = true;
+    bool result = false;
     // // TODO 2: search the target in the grid
-    
-    if (r<0 || c<0)
-        return false;
-    if (grid->row() <= r || grid->col() <= c){
-        return false;
-    }
     
     //Base Case. You got to the end of the character string.
     if (*target == '\0'){
         return true;
     }
-    //Recursive Case. 
-    //
-    char getcharacter;
-    grid->get(r,c,getcharacter);
-    if (getcharacter != *target)
+
+    //check that you aren't looking in a grid box out side of the range.
+    if (r<0 || c<0)
         return false;
+    // checks to see if the number of rows and columns are less than the what the function called for
+    if (grid->row() <= r || grid->col() <= c){
+        return false;
+    }
     
+    // make a temporary variable to store the character in the premade grid
+    char getcharacter;
+    // gets the variable from the grid
+    grid->get(r,c,getcharacter);
+    // see if it equals the current value of the character in target. 
+    //      remember, *target is an array of characters. 
+    //      you are comparing a character in the grid to the current character in your word
+    if (getcharacter != *target){
+        return false;
+    }
+    
+    // set the current grid box to \0. 
+    // this makes it so that if you get to it again during search,
+    //      when you are doing your 4 way search, it gets ignored
     grid->set(r, c, '\0');
     
-    
-        for (int i=0; i<grid->col(); i++){
-            return search(grid, r, c+1, (target+1));
-        }
+    //  Recursive Search the grid. down, up, left, right
+    //              | row,col |
+    //              | 1-1,1+0  |
+    //    | 1+0,1-1 |   1,1    | 1+0,1+1 |
+    //              | 1+1,1+0  |     
+    result =  search(grid, r-1, c, target+1)     // search down.    1 row up, same column
+            ||search(grid, r+1, c, target+1)     // search up.      1 row down, same column
+            ||search(grid, r, c-1, target+1)     // search left.    1 column to the left, same row
+            ||search(grid, r, c+1, target+1);    // search right.   1 column to the right, same row
 
-        for (int j=0; j<grid->row(); j++){
-            return search(grid, r+1, c, (target+1));
-        }
- 
 
+    //reset the grid box back to the original character as you backtrack
     grid->set(r, c, getcharacter);
+
     return result;
 }
 
@@ -121,21 +134,21 @@ int main(int argc, char* argv[]) {
             return EXIT_FAILURE;
         }
 
-        // // Uncomment the code below to print out the data from the file. 
-        // // It prints out the target word, row and columns, and matrix data
-        // cout << "-----Grid Data------" << endl;
-        // cout << "-----You are in the main function" << endl;
-        // cout << target << endl;
-        // cout << grid->row() << " " << grid->col() << endl;
-        // for (int i=0; i<(grid->row()); i++){
-        //     for (int j=0; j<(grid->col()); j++){
-        //         char getCharacter;
-        //         grid->get(i,j,getCharacter);
-        //         cout << getCharacter << " ";
-        //     }
-        //     cout << endl;
-        // }
-        // cout << "-----------------" << endl;
+        // Uncomment the code below to print out the data from the file. 
+        // It prints out the target word, row and columns, and matrix data
+        cout << "-----Grid Data------" << endl;
+        cout << "-----In main()-----" << endl;
+        cout << target << endl;
+        cout << grid->row() << " " << grid->col() << endl;
+        for (int i=0; i<(grid->row()); i++){
+            for (int j=0; j<(grid->col()); j++){
+                char getCharacter;
+                grid->get(i,j,getCharacter);
+                cout << getCharacter << " ";
+            }
+            cout << endl;
+        }
+        cout << "-----------------" << endl;
 
         ofstream output;
         output.open(argv[2]);
@@ -148,6 +161,7 @@ int main(int argc, char* argv[]) {
             for (int j = 0; j < grid->col(); ++j) {
                 if (search(grid, i , j, target.c_str())) {
                    output << "Solution found!" << endl;               
+                   cout << "Solution found!" << endl;
                 }
             }
         }
