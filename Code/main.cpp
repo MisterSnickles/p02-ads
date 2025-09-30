@@ -1,5 +1,6 @@
 #include <fstream>
 //#include <vector>
+#include <cmath>
 #include "Utility.h"
 #include "Grid.h"
 
@@ -19,9 +20,7 @@ Grid<char>* read_input(string file, string& target) {
 
     // get first line from input file and assign it to target
     getline(inputFile, target);
-    if (!isUpperLetter(target)) {
-        throw FileContentException();
-    }
+
 
     // initialize variables for rows and columns
     string rows;
@@ -40,41 +39,22 @@ Grid<char>* read_input(string file, string& target) {
         throw FileContentException();
     }
 
-
-    // read follwing lines into a grid (2d array)
-    
-    char** grid_data = new char*[num_rows];
-    for (int i = 0; i < num_rows; i++) {
-        grid_data[i] = new char[num_columns];
-        string line;
-
-        // throw error if line to short or read fails
-        if (!getline(inputFile, line) || line.length() != num_columns) {
-
-            // properly delete grid data before throwing error
-            for (int j = 0; j < i; j++) {
-                delete[] grid_data[j];
-            } 
-            // delete object and throw exception
-            delete grid_data;
-            throw FileContentException();
-        }
-
-        // if no error
-        for (int j = 0; j < num_columns; j++) {
-            grid_data[i][j] = line[j];
-        }
-    }
+    // inputFile.ignore(numeric_limits<streamsize>::max(), '\n');
 
     // create new grid on heap using row and column as parameters
-    Grid<char>* grid = new Grid<char>(num_rows, num_columns, grid_data);
-
-    // clean up temp grid_data
+    Grid<char>* grid = new Grid<char>(num_rows, num_columns);
+    
+    // read follwing characters into grid
     for (int i = 0; i < num_rows; i++) {
-        delete[] grid_data[i];
-    } 
-    delete[] grid_data;
-
+        for (int j = 0; j < num_columns; j++) {
+            char ch;
+            if (!inputFile << ch) {
+                throw FileContentException();
+            }
+            //
+            grid->set(i, j, ch);
+        }
+    }
 
     return grid;
 }
