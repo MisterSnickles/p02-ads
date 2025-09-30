@@ -71,20 +71,38 @@ Grid<char>* read_input(string file, string& target) {
 */
 bool search(Grid<char>* grid, int r, int c, const char* target) {
     bool result = true;
+    // // TODO 2: search the target in the grid
     
-    // TODO 2: search the target in the grid
-    // cout << target << endl;
-    // cout << target[0] << endl;
-    // int x = target.length();
+    if (r<0 || c<0)
+        return false;
+    if (grid->row() <= r || grid->col() <= c){
+        return false;
+    }
+    
+    //Base Case. You got to the end of the character string.
+    if (*target == '\0'){
+        return true;
+    }
+    //Recursive Case. 
+    //
+    char getcharacter;
+    grid->get(r,c,getcharacter);
+    if (getcharacter != *target)
+        return false;
+    
+    grid->set(r, c, '\0');
+    
+    
+        for (int i=0; i<grid->col(); i++){
+            return search(grid, r, c+1, (target+1));
+        }
 
+        for (int j=0; j<grid->row(); j++){
+            return search(grid, r+1, c, (target+1));
+        }
+ 
 
-    // for(int i=0; i<(target.length()); i++){
-    //     cout <<target[i]<<endl;
-    // }
-
-
-
-
+    grid->set(r, c, getcharacter);
     return result;
 }
 
@@ -125,15 +143,15 @@ int main(int argc, char* argv[]) {
             throw FileException(argv[2]);
         }
         search(grid, 0 , 1, target.c_str());
-        
-        for (int i = 0; i < grid->row(); i++) {
-            for (int j = 0; j < grid->col(); j++) {
+
+        for (int i = 0; i < grid->row(); ++i) {
+            for (int j = 0; j < grid->col(); ++j) {
                 if (search(grid, i , j, target.c_str())) {
-                   output << "Solution found!" << endl;
-                    // cout << "Solution found!: " << i << " " << j << endl;
-               }
+                   output << "Solution found!" << endl;               
+                }
             }
         }
+        
         output.close();
 
     } catch(...) {
