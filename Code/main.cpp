@@ -5,6 +5,7 @@
 
 using namespace std;
 
+
 void print_grid(Grid<char>* grid) {
     cout << "-----Print Grid------" << endl;
     for (int i=0; i<(grid->row()); i++){
