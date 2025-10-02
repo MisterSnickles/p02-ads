@@ -131,9 +131,7 @@ void search2(Grid<char>* grid, int r, int c, const char* target, vector<string>&
 }
 
 void print_grid(Grid<char>* grid, int r, int c, const char* target) {
-
-
-      cout << "-----After Read Input------" << endl;
+    cout << "-----After Read Input------" << endl;
     cout << "-----You are in the read_input function" << endl;
     cout << target << endl;
     cout << grid->row() << " " << grid->col() << endl;
@@ -147,10 +145,6 @@ void print_grid(Grid<char>* grid, int r, int c, const char* target) {
     }
     cout << "-----------------" << endl; 
 }
-
-
-
-
 
 int main(int argc, char* argv[]) {
     try {
