@@ -8,7 +8,7 @@ using namespace std;
 void output_targetANDgrid(const string target, Grid<char>* grid, ostream& out) {
     out << "Target: " << target << endl;
 
-    out << "-----Grid------" << endl;
+    out << "---Grid---" << endl;
     out << "  ";
     for (int i=0; i<=(grid->row()); i++){
         out << i << " ";
@@ -23,13 +23,13 @@ void output_targetANDgrid(const string target, Grid<char>* grid, ostream& out) {
         }
         out << endl;
     }
-    out << "---------------" << endl;
+    out << "----------" << endl;
 }
 
 void print_targetANDgrid(const string target, Grid<char>* grid) {
     cout << "Target: " << target << endl;
 
-    cout << "-----Grid------" << endl;
+    cout << "---Grid---" << endl;
     cout << "  ";
     for (int i=0; i<=(grid->row()); i++){
         cout << i << " ";
@@ -44,7 +44,7 @@ void print_targetANDgrid(const string target, Grid<char>* grid) {
         }
         cout << endl;
     }
-    cout << "---------------" << endl;
+    cout << "----------" << endl;
 }
 
 /* 
@@ -114,7 +114,7 @@ bool search(Grid<char>* grid, int r, int c, const char* target) {
     // make a temporary variable to store the character in the premade grid
     char getGridCharacter;
     // gets the variable from the grid
-    grid->get(r,c,getGridCharacter);
+    if(grid->get(r,c,getGridCharacter) != success) return false;
     // see if it equals the current value of the character in target. 
     //      remember, *target is an array of characters. 
     //      you are comparing a character in the grid to the current character in your word
@@ -149,28 +149,22 @@ void search2(Grid<char>* grid, int r, int c, const char* target, vector<string>&
     // // TODO 2: search the target in the grid
 
     //Base Case. You got to the end of the character string.
-    if (*target == '\0'){
-        return;
-    }
+    if (*target == '\0') return;
+    
 
     //check that you aren't looking in a grid box out side of the range.
-    if (r<0 || c<0)
-        return;
+    if (r<0 || c<0) return;
     // checks to see if the number of rows and columns are less than the what the function called for
-    if (grid->row() <= r || grid->col() <= c){
-        return;
-    }
+    if (grid->row() <= r || grid->col() <= c) return;
     
     // make a temporary variable to store the character in the premade grid
     char getGridCharacter;
     // gets the variable from the grid
-    grid->get(r,c,getGridCharacter);
+    if (grid->get(r,c,getGridCharacter) != success) return;
     // see if it equals the current value of the character in target. 
     //      remember, *target is an array of characters. 
     //      you are comparing a character in the grid to the current character in your word
-    if (getGridCharacter != *target){
-        return;
-    }
+    if (getGridCharacter != *target) return;
     
     out << "(" << r << "," << c << ") " ;
     cout << "(" << r << "," << c << ") " ;
