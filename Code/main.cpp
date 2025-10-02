@@ -77,7 +77,7 @@ bool search(Grid<char>* grid, int r, int c, const char* target) {
     if (ch != *target) return false;
 
     // temporarily mark current character with #
-    grid->set(r, c, '#');
+    grid->set(r, c, '\0');
 
     // make recursive call to each of the surrounding characters in grid, if one returns true, it will move on
     result = search(grid, r + 1, c, target + 1) ||
@@ -115,7 +115,7 @@ void search2(Grid<char>* grid, int r, int c, const char* target, vector<string>&
     if (ch != *target) return;
 
     // temporarily mark current character with #
-    grid->set(r, c, '#');
+    grid->set(r, c, '\0');
 
     string newPath = path + "(" + to_string(r) + "," + to_string(c) + ")";
 
