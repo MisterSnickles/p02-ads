@@ -1,10 +1,53 @@
 #include <fstream>
 #include <vector>
-#include <cmath>
 #include "Utility.h"
 #include "Grid.h"
 
 using namespace std;
+
+// functions used to output to file and console ----------------------------------
+void output_targetANDgrid(const string target, Grid<char>* grid, ostream& out) {
+    out << "Target: " << target << endl;
+
+    out << "---Grid---" << endl;
+    out << "  ";
+    for (int i=0; i<=(grid->row()); i++){
+        out << i << " ";
+    }
+    out << endl;
+    for (int i=0; i<(grid->row()); i++){
+        out << i << " ";
+        for (int j=0; j<(grid->col()); j++){
+            char getCharacter;
+            grid->get(i,j,getCharacter);
+            out << getCharacter << " ";
+        }
+        out << endl;
+    }
+    out << "----------" << endl;
+}
+
+void print_targetANDgrid(const string target, Grid<char>* grid) {
+    cout << "Target: " << target << endl;
+
+    cout << "---Grid---" << endl;
+    cout << "  ";
+    for (int i=0; i<=(grid->row()); i++){
+        cout << i << " ";
+    }
+    cout << endl;
+    for (int i=0; i<(grid->row()); i++){
+        cout << i << " ";
+        for (int j=0; j<(grid->col()); j++){
+            char getCharacter;
+            grid->get(i,j,getCharacter);
+            cout << getCharacter << " ";
+        }
+        cout << endl;
+    }
+    cout << "----------" << endl;
+}
+// end of output functions --------------------------------------------------------
 
 /* 
     The search target string will be saved in string& target
@@ -12,46 +55,40 @@ using namespace std;
 */
 Grid<char>* read_input(string file, string& target) {
 
-    // TODO 1: read the input file
+   
+    //create stream, open file, and check if it fails.
     ifstream inputFile(file);
-    if (!inputFile) {
-        throw FileException(file);
-    }
+    if (inputFile.fail())   throw FileException(file);
 
-    // get first line from input file and assign it to target
+    //gets the target word from the first line in the input file
     getline(inputFile, target);
-
-
-    // initialize variables for rows and columns
-    string rows;
-    string columns;
-    // get second line  from input file and assign first digit to row and second digit to column
-    inputFile >> rows >> columns;
-
-    int num_rows = string_to_int(rows);
-    int num_columns = string_to_int(columns);
-
-    if (num_rows <= 0 || num_columns <= 0) {
-        throw FileContentException();
-    }
-
-    inputFile.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    // create new grid on heap using row and column as parameters
-    Grid<char>* grid = new Grid<char>(num_rows, num_columns);
     
-    // read follwing characters into grid
-    for (int i = 0; i < num_rows; i++) {
-        for (int j = 0; j < num_columns; j++) {
+    //gets the row and column number from the second line in the input file
+    int numRows;
+    int numCols;
+    inputFile >> numRows;
+    inputFile >> numCols;
+
+    if(numRows <= 0 || numCols <= 0) throw FileContentException();
+
+    //Create a new grid object and initialize with the row and column you got from the file
+    Grid<char>* grid = new Grid<char>(numRows, numCols);
+  
+    // set each element in the array with the character in the file
+    for (int i=0; i<numRows; i++){
+        for (int j=0; j<numCols; j++){
             char ch;
-            if (!inputFile << ch) {
+            if (!(inputFile>>ch)){
                 throw FileContentException();
             }
-            //
             grid->set(i, j, ch);
         }
     }
 
+    //close the file
+    inputFile.close();;
+
+    //return the grid you made. Our grid in main will be set to this grid.
     return grid;
 }
 
@@ -94,56 +131,48 @@ bool search(Grid<char>* grid, int r, int c, const char* target) {
 
 // TODO bonus: search the target in the grid, and print the sequence(s) into the output stream
 // e.g., you can consider the following function:
-void search2(Grid<char>* grid, int r, int c, const char* target, vector<string>& result, ostream& out) {
+void search2(Grid<char>* grid, int r, int c, const char* target, vector<string>& result, ostream& out, string currentPath) {
 
-    string path;
 
     // base case: if we have matched all letters
     if (*target == '\0') {
-        result.push_back(path);
-        out << "Found word: " << path << endl;
+        result.push_back(currentPath);
         return;
     }
 
-    // check boundaries of r and c parameters
+    // case 1: check boundaries of r and c parameters
     if (r < 0 || c < 0 || r >= grid->row() || c >= grid->col()) return;
 
 
-    // check character
+    // case 2: check character
     char ch;
-    if (grid->get(r, c, ch) != success) return;
-    if (ch != *target) return;
+    if (grid->get(r, c, ch) != success || ch == '\0' || ch != *target) {
+        return;
+    }
 
-    // temporarily mark current character with #
+    string newPath = currentPath + "(" + to_string(r) + "," + to_string(c) + ")";
+
+    // 4. Base Case: If this was the *last* character of the word, we've found a full solution.
+    // Add the completed path to our vector of solutions and stop this recursive branch.
+    if (*(target + 1) == '\0') {
+        result.push_back(newPath);
+        return;
+    }
+
+    // temporarily mark current character with null character to identify as visited
     grid->set(r, c, '\0');
 
-    string newPath = path + "(" + to_string(r) + "," + to_string(c) + ")";
+
 
     // make recursive call to each of the surrounding characters in grid, if one returns true, it will move on
-    search2(grid, r + 1, c, target + 1, result, out);
-    search2(grid, r - 1, c, target + 1, result, out);
-    search2(grid, r, c + 1, target + 1, result, out);
-    search2(grid, r, c - 1, target + 1, result, out);
+    search2(grid, r + 1, c, target + 1, result, out, newPath);
+    search2(grid, r - 1, c, target + 1, result, out, newPath);
+    search2(grid, r, c + 1, target + 1, result, out, newPath);
+    search2(grid, r, c - 1, target + 1, result, out, newPath);
 
     // unmark current character
     grid->set(r, c, ch);
 
-}
-
-void print_grid(Grid<char>* grid, int r, int c, const char* target) {
-    cout << "-----After Read Input------" << endl;
-    cout << "-----You are in the read_input function" << endl;
-    cout << target << endl;
-    cout << grid->row() << " " << grid->col() << endl;
-    for (int i=0; i<(grid->row()); i++){
-        for (int j=0; j<(grid->col()); j++){
-            char getCharacter;
-            grid->get(i,j,getCharacter);
-            cout << getCharacter << " ";
-        }
-        cout << endl;
-    }
-    cout << "-----------------" << endl; 
 }
 
 int main(int argc, char* argv[]) {
@@ -164,15 +193,45 @@ int main(int argc, char* argv[]) {
             throw FileException(argv[2]);
         }
 
+        vector<string> result;
+        bool successfulSearch = false;
+
         for (int i = 0; i < grid->row(); i++) {
             for (int j = 0; j < grid->col(); j++) {
-                if (search(grid, i , j, target.c_str())) {
-                    output << "Solution found!" << endl;
-                }
+
+                // calling both search() and search2() to show functionality of each
+                // if search() returns true then search2() will execute and save searched path
+                if (search(grid, i, j, target.c_str())) {
+                    successfulSearch = true;
+
+                    // if search is successful, run search2 to save path
+                    search2(grid, i, j, target.c_str(), result, output, "");
+                } 
             }
         }
 
+        if (successfulSearch) {
+            cout << "Search is successful!" << endl;
+        } else {
+            cout << "Search is unsuccessful!!!" << endl;
+            return fail;
+        }
+
+        output_targetANDgrid(target, grid, output);
+        print_targetANDgrid(target, grid);
+        
+        // After checking all possible starting points, write the results
+        output << "Solutions Found: " << result.size() << endl;
+        cout << "Solutions Found: " << result.size() << endl;
+
+        for (int i = 0; i < result.size(); i++) {
+            output << i + 1 << ". " << result[i] << endl;
+            cout << i + 1 << ". " << result[i] << endl;
+        }
+
         output.close();
+        delete grid;
+        grid = nullptr;
 
     } catch(...) {
         exit(EXIT_FAILURE);
